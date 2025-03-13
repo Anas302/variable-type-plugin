@@ -1,0 +1,17 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>com.example.mycompany.variables-type-display</id>
+    <name>Variables-type-display</name>
+    <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
+    <description>description</description>
+    <depends>com.intellij.modules.platform</depends>
+    <extensions defaultExtensionNs="com.intellij"></extensions>
+    <actions>
+        <action class="com.example.mycompany.variablestypedisplay.VariableTypeDisplay"
+                id="com.example.mycompany.variablestypedisplay.VariableTypeDisplay"
+                text = "XXXXXXXXX">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+    </actions>
+
+</idea-plugin>
