@@ -1,14 +1,21 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.example.mycompany.variables-type-display</id>
-    <name>Variables-type-display</name>
-    <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
-    <description>description</description>
+    <name>Variables Type Display</name>
+    <vendor email="anas302.kh@gmail.com">Internship Plugin</vendor>
+    <description>A plugin developed for the purpose of applying to JetBrains internship</description>
     <depends>com.intellij.modules.platform</depends>
-    <extensions defaultExtensionNs="com.intellij"></extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <postStartupActivity implementation="com.example.mycompany.variablestypedisplay.ProjectStartupActivity"/>
+    </extensions>
+    <projectListeners>
+        <listener
+                class="com.example.mycompany.variablestypedisplay.VariableTypeDisplayListener"
+                topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    </projectListeners>
     <actions>
-        <action class="com.example.mycompany.variablestypedisplay.VariableTypeDisplay"
-                id="com.example.mycompany.variablestypedisplay.VariableTypeDisplay"
+        <action class="com.example.mycompany.variablestypedisplay.VariableTypeDisplayAction"
+                id="com.example.mycompany.variablestypedisplay.VariableTypeDisplayAction"
                 text = "XXXXXXXXX">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>

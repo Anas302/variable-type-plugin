@@ -36,7 +36,7 @@ class VariableTypeWidget implements CustomStatusBarWidget {
 }
 
 
-public class VariableTypeDisplay extends AnAction {
+public class VariableTypeDisplayAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         // Get the current project
@@ -51,9 +51,14 @@ public class VariableTypeDisplay extends AnAction {
     }
 }
 
+
 class HelloWorldTextPanel extends TextPanel {
     public HelloWorldTextPanel() {
         super();
         setText("Hello World");
+    }
+
+    public void updateText(@NotNull String newText) {
+        SwingUtilities.invokeLater(() -> setText(newText));
     }
 }
