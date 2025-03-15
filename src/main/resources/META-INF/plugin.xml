@@ -6,6 +6,6 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.python</depends>
     <extensions defaultExtensionNs="com.intellij">
-        <postStartupActivity implementation="com.example.mycompany.variablestypedisplay.ProjectStartupActivity"/>
+        <postStartupActivity implementation="com.example.mycompany.variablestypedisplay.VariablesTypeProjectActivity"/>
     </extensions>
 </idea-plugin>
