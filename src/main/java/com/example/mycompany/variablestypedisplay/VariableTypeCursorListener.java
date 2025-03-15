@@ -18,28 +18,19 @@ import com.jetbrains.python.psi.types.PyType;
 import com.jetbrains.python.psi.types.TypeEvalContext;
 import org.jetbrains.annotations.NotNull;
 
-public class VariableTypeListener implements EditorMouseMotionListener {
+public class VariableTypeCursorListener implements EditorMouseMotionListener {
     @Override
     public void mouseMoved(@NotNull EditorMouseEvent event) {
         Editor editor = event.getEditor();
         Project project = editor.getProject();
-        if (project == null) {
-            System.out.println("Project is null");
-            return;
-        }
+        if (project == null) return;
 
         PsiFile psiFile = PsiUtilBase.getPsiFileInEditor(editor, project);
-        if (psiFile == null) {
-            System.out.println("PsiFile is null");
-            return;
-        }
+        if (psiFile == null) return;
 
         int offset = editor.getCaretModel().getOffset();
         PsiElement element = psiFile.findElementAt(offset);
-        if (element == null) {
-            System.out.println("Element is null");
-            return;
-        }
+        if (element == null) return;
 
         System.out.println("Element under cursor: " + element.getText());
         StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);

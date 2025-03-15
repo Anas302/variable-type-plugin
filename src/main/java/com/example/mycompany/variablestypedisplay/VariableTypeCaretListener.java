@@ -31,49 +31,39 @@ public class VariableTypeCaretListener implements CaretListener {
         PsiFile psiFile = PsiUtilBase.getPsiFileInEditor(editor, project);
         if (psiFile == null) return;
 
-        int offset = Objects.requireNonNull(event.getCaret()).getOffset(); // Get caret position
+        int offset = Objects.requireNonNull(event.getCaret()).getOffset();
         PsiElement element = psiFile.findElementAt(offset);
         if (element == null) return;
 
-        System.out.println("Element under cursor: " + element.getText());
-        StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
 
         // Check if it's a variable declaration (x = 10)
         PyTargetExpression targetExpression = PsiTreeUtil.getParentOfType(element, PyTargetExpression.class);
         if (targetExpression != null) {
-            System.out.println("Variable Declaration Found: " + targetExpression.getText());
-            PyType type = resolveType(targetExpression, project, psiFile);
-            statusBar.setInfo("Variable " + targetExpression.getName() + ": " + type.getName());
+            resolveAndSetType(targetExpression, project, psiFile);
             return;
         }
 
         // Check if it's a variable reference (y = x)
         PyReferenceExpression referenceExpression = PsiTreeUtil.getParentOfType(element, PyReferenceExpression.class);
         if (referenceExpression != null) {
-            System.out.println("Variable Reference Found: " + referenceExpression.getText());
             PsiReference ref = referenceExpression.getReference();
             if (ref != null) {
                 PsiElement resolvedElement = ref.resolve();
-                if (resolvedElement instanceof PyTypedElement){
-                    PyType type = resolveType((PyTypedElement) resolvedElement, project, psiFile);
-                    statusBar.setInfo("Variable " + ((PyTypedElement) resolvedElement).getName() + ": " + type.getName());
-                }
+                if (resolvedElement instanceof PyTypedElement)
+                    resolveAndSetType((PyTypedElement) resolvedElement, project, psiFile);
             }
-            return;
         }
-        System.out.println("No valid Python variable found.");
     }
 
-    private PyType resolveType(PyTypedElement element, Project project, PsiFile psiFile) {
+    private void resolveAndSetType(PyTypedElement element, Project project, PsiFile psiFile) {
         TypeEvalContext evalContext = TypeEvalContext.userInitiated(project, psiFile);
         PyType type = evalContext.getType(element);
 
+        // Update the status bar with the type
         if (type != null) {
-            System.out.println("Resolved Type: " + type.getName());
-            return type;
+            StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
+            statusBar.setInfo("Variable " + element.getName() + ": " + type.getName());
         }
-        System.out.println("Resolved Type: null (Type resolution failed)");
-        return null;
     }
 }
 
