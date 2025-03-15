@@ -3,7 +3,6 @@ package com.example.mycompany.variablestypedisplay;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.event.CaretListener;
 import com.intellij.openapi.editor.event.EditorEventMulticaster;
-import com.intellij.openapi.editor.event.EditorMouseMotionListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.ProjectActivity;
 import kotlin.coroutines.Continuation;
@@ -14,10 +13,6 @@ public class VariablesTypeProjectActivity implements ProjectActivity {
     @Override
     public Object execute(@NotNull Project project, @NotNull Continuation<? super kotlin.Unit> continuation) {
         EditorEventMulticaster multicaster = EditorFactory.getInstance().getEventMulticaster();
-
-        // register cursor listener
-        EditorMouseMotionListener cursorListener = new VariableTypeCursorListener();
-        multicaster.addEditorMouseMotionListener(cursorListener, project);
 
         // register caret listener
         CaretListener caretListener = new VariableTypeCaretListener();
