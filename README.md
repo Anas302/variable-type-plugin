@@ -8,4 +8,4 @@ To run the plugin:
   3. `./gradlew buildPlugin`
   4. `./gradle runIde`
 
-**When the caret is over a variable, the type and name of the variable will be displayed at the bottom-left corner in the status bar.**
+**When the caret is over a variable, the type and name of the variable will be displayed at the bottom-left corner in the status bar. (e.g. `Variable x: int`)**
