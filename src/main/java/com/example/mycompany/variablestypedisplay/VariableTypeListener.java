@@ -42,13 +42,14 @@ public class VariableTypeListener implements EditorMouseMotionListener {
         }
 
         System.out.println("Element under cursor: " + element.getText());
+        StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
 
         // Check if it's a variable declaration (x = 10)
         PyTargetExpression targetExpression = PsiTreeUtil.getParentOfType(element, PyTargetExpression.class);
         if (targetExpression != null) {
             System.out.println("Variable Declaration Found: " + targetExpression.getText());
-            // TODO: make the function return the type and display it here in status bar, rather than in function
-            resolveAndPrintType(targetExpression, project, psiFile);
+            PyType type = resolveType(targetExpression, project, psiFile);
+            statusBar.setInfo("Variable " + targetExpression.getName() + ": " + type.getName());
             return;
         }
 
@@ -59,24 +60,25 @@ public class VariableTypeListener implements EditorMouseMotionListener {
             PsiReference ref = referenceExpression.getReference();
             if (ref != null) {
                 PsiElement resolvedElement = ref.resolve();
-                if (resolvedElement instanceof PyTypedElement)
-                    resolveAndPrintType((PyTypedElement) resolvedElement, project, psiFile);
+                if (resolvedElement instanceof PyTypedElement){
+                    PyType type = resolveType((PyTypedElement) resolvedElement, project, psiFile);
+                    statusBar.setInfo("Variable " + ((PyTypedElement) resolvedElement).getName() + ": " + type.getName());
+                }
             }
             return;
         }
         System.out.println("No valid Python variable found.");
     }
 
-    private void resolveAndPrintType(PyTypedElement element, Project project, PsiFile psiFile) {
+    private PyType resolveType(PyTypedElement element, Project project, PsiFile psiFile) {
         TypeEvalContext evalContext = TypeEvalContext.userInitiated(project, psiFile);
         PyType type = evalContext.getType(element);
 
         if (type != null) {
-            StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
             System.out.println("Resolved Type: " + type.getName());
-            statusBar.setInfo("Variable'" + element.getName() + "': " + type.getName());
+            return type;
         }
-        else
-            System.out.println("Resolved Type: null (Type resolution failed)");
+        System.out.println("Resolved Type: null (Type resolution failed)");
+        return null;
     }
 }
