@@ -11,9 +11,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilBase;
-import com.jetbrains.python.psi.PyReferenceExpression;
-import com.jetbrains.python.psi.PyTargetExpression;
-import com.jetbrains.python.psi.PyTypedElement;
+import com.jetbrains.python.psi.*;
 import com.jetbrains.python.psi.types.PyType;
 import com.jetbrains.python.psi.types.TypeEvalContext;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +25,6 @@ public class VariableTypeCaretListener implements CaretListener {
         Editor editor = event.getEditor();
         Project project = editor.getProject();
         if (project == null) return;
-
         PsiFile psiFile = PsiUtilBase.getPsiFileInEditor(editor, project);
         if (psiFile == null) return;
 
@@ -35,20 +32,12 @@ public class VariableTypeCaretListener implements CaretListener {
         PsiElement element = psiFile.findElementAt(offset);
         if (element == null) return;
 
-
-        // Check if it's a variable declaration (x = 10)
-        PyTargetExpression targetExpression = PsiTreeUtil.getParentOfType(element, PyTargetExpression.class);
-        if (targetExpression != null) {
-            resolveAndSetType(targetExpression, project, psiFile);
-            return;
-        }
-
-        // Check if it's a variable reference (y = x)
-        PyReferenceExpression referenceExpression = PsiTreeUtil.getParentOfType(element, PyReferenceExpression.class);
-        if (referenceExpression != null) {
-            PsiReference ref = referenceExpression.getReference();
-            if (ref != null) {
-                PsiElement resolvedElement = ref.resolve();
+        // find the type of the variable at the caret
+        PyExpression expression = PsiTreeUtil.getParentOfType(element, PyExpression.class);
+        if (expression != null) {
+            PsiReference reference = expression.getReference();
+            if (reference != null) {
+                PsiElement resolvedElement = reference.resolve();
                 if (resolvedElement instanceof PyTypedElement)
                     resolveAndSetType((PyTypedElement) resolvedElement, project, psiFile);
             }
